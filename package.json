@@ -1,0 +1,32 @@
+{
+    "name": "gasless-relayer",
+    "version": "0.0.1",
+    "description": "Relayer for Gasless transactions",
+    "main": "./src/index.js",
+    "scripts": {
+        "develop": "nodemon index.js",
+        "start": "node index.js",
+        "buildDocs": "rimraf ./documentation && jsdoc -c ./jsdocConfiguration.json -r -d ./documentation",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Jaimeloeuf/Gasless-Relayer.git"
+    },
+    "author": "JJ",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Jaimeloeuf/Gasless-Relayer/issues"
+    },
+    "homepage": "https://github.com/Jaimeloeuf/Gasless-Relayer#readme",
+    "dependencies": {
+        "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "docdash": "^1.1.1",
+        "jsdoc": "^3.6.3",
+        "jsdoc-export-default-interop": "^0.3.1",
+        "nodemon": "^1.19.4",
+        "rimraf": "^3.0.0"
+    }
+}

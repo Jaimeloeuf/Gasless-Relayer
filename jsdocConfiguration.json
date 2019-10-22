@@ -1,0 +1,36 @@
+{
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "include": [
+            "./src/routes/"
+        ],
+        "includePattern": ".+\\.js(doc|x)?$"
+    },
+    "plugins": [
+        "node_modules/jsdoc-export-default-interop/dist/index"
+    ],
+    "opts": {
+        "template": "node_modules/docdash"
+    },
+    "docdash": {
+        "sort": false,
+        "openGraph": {
+            "title": "Documentation of Torus Gasless relayer",
+            "type": "website"
+        },
+        "meta": {
+            "title": "Documentation for Gasless Relayer"
+        },
+        "search": true,
+        "menu": {
+            "Project Website": {
+                "href": "https://github.com/Jaimeloeuf/Gasless-Relayer",
+                "target": "_blank",
+                "class": "menu-item",
+                "id": "website_link"
+            }
+        }
+    }
+}
