@@ -7,6 +7,7 @@
         "develop": "nodemon index.js",
         "start": "node index.js",
         "buildDocs": "rimraf ./documentation && jsdoc -c ./jsdocConfiguration.json -r -d ./documentation",
+        "develop-docs": "nodemon -x npm run buildDocs",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {

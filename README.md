@@ -1,5 +1,6 @@
 # Gasless Relayer
 Relayer to provide Gasless transaction to users via meta transactions without the need for refund from the call receiver.  
+This is currently a basic POC version of the relayer.  
 
 ---
 ## Installations, Builds and Running
