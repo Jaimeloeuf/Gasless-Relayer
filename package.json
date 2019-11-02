@@ -4,8 +4,8 @@
     "description": "Relayer for Gasless transactions",
     "main": "./src/index.js",
     "scripts": {
-        "develop": "nodemon index.js",
-        "start": "node index.js",
+        "develop": "nodemon ./src/index.js",
+        "start": "node ./src/index.js",
         "buildDocs": "rimraf ./documentation && jsdoc -c ./jsdocConfiguration.json -r -d ./documentation",
         "develop-docs": "nodemon -x npm run buildDocs",
         "test": "echo \"Error: no test specified\" && exit 1"
