@@ -8,6 +8,7 @@
         "start": "node ./src/index.js",
         "buildDocs": "rimraf ./documentation && jsdoc -c ./jsdocConfiguration.json -r -d ./documentation",
         "develop-docs": "nodemon -x npm run buildDocs",
+        "lint:js": "./node_modules/.bin/eslint --ignore-path .gitignore --fix **/*.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -26,6 +27,7 @@
     },
     "devDependencies": {
         "docdash": "^1.1.1",
+        "eslint": "^6.6.0",
         "jsdoc": "^3.6.3",
         "jsdoc-export-default-interop": "^0.3.1",
         "nodemon": "^1.19.4",
