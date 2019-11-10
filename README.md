@@ -4,22 +4,33 @@ This is currently a basic POC version of the relayer.
 
 ---
 ## Installations, Builds and Running
+This project requires a .env file which should be in repo root or, available in the directory you run the code from.  
+The following configs are required in your .env file
+```env
+PORT=3000
+PRIVATE_KEY=0x7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8
+WEB3_PROVIDER_URL=https://mainnet.infura.io/YOUR_API_KEY
+```
+
 Installing dependencies for running/deployment
-```cli
-$ npm i --production
+```shell
+npm i --production
 ```
 
 Installing all dependencies including those for development
-```cli
-$ npm i
+```shell
+npm i
 ```
 
-Building the documentation
-- Note that you need to have devDependencies installed to build the docs
-- Docs is built using JSDocs with Docdash template
-- Open "./documentation/index.html" with a browser after building the documentation
-```cli
-$ npm run buildDocs
+For testing purposes mocha is used, either global or local versions of mocha can be used.
+```shell
+npm i -g mocha # Install mocha globally
+mocha # Run the global mocha cli to run tests
+```
+
+For local testing
+```shell
+npm run test # Use the test script, which uses local mocha.
 ```
 
 Running in deployment mode
@@ -33,6 +44,14 @@ Run the project for development
 - Requires devdependencies to be installed
 ```cli
 $ npm run develop
+```
+
+Building the documentation
+- Note that you need to have devDependencies installed to build the docs
+- Docs is built using JSDocs with Docdash template
+- Open "./documentation/index.html" with a browser after building the documentation
+```cli
+$ npm run buildDocs
 ```
 
 ---
