@@ -5,6 +5,7 @@
     "main": "./src/index.js",
     "scripts": {
         "develop": "nodemon ./src/index.js",
+        "develop-inspect": "nodemon --inspect-brk ./src/index.js",
         "start": "node ./src/index.js",
         "buildDocs": "rimraf ./documentation && jsdoc -c ./jsdocConfiguration.json -r -d ./documentation",
         "develop-docs": "nodemon -x npm run buildDocs",

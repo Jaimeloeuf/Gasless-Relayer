@@ -1,4 +1,4 @@
-'use strict'; // Enforce use of strict verion of JavaScript
+"use strict"; // Enforce use of strict verion of JavaScript
 
 /**
  * @fileOverview Run an express server on 2020
@@ -20,20 +20,20 @@ require("dotenv").config();
 
 
 /* Mount all the routes onto the Express app */
-app.use("/relayer", require('./routes/relayer'));
+app.use("/relayer", require("./routes/relayer"));
 
 
 // Ping Route to check server status
-app.get('/ping', (req, res) => {
+app.get("/ping", (req, res) => {
 	/*	Things to return to client
         - Request status
         - Uptime of the server instance
     */
-    res.json({
-        // @TODO Remove the hardcoded status number
-        status: 200,
-        uptime: uptime()
-    });
+	res.json({
+		// @TODO Remove the hardcoded status number
+		status: 200,
+		uptime: uptime()
+	});
 });
 
 
@@ -44,18 +44,18 @@ app.get('/ping', (req, res) => {
  * @Todo Log error either to error logs or to a logging service
  */
 app.use((req, res, next) => {
-    try {
-        /// @Todo Log error either to error logs or to a logging service
+	try {
+		/// @Todo Log error either to error logs or to a logging service
 
-        // Set status to indicate resource not found and send back the string representation of the HTTP code, i.e. "Not-Found"
-        // res.sendStatus(404);
+		// Set status to indicate resource not found and send back the string representation of the HTTP code, i.e. "Not-Found"
+		// res.sendStatus(404);
 
-        // Send without the string representation. End the cycle right after setting with 404
-        res.status(404).end();
-    } catch (err) {
-        // 500 error middleware is called upon catching any errors
-        next(err);
-    }
+		// Send without the string representation. End the cycle right after setting with 404
+		res.status(404).end();
+	} catch (err) {
+		// 500 error middleware is called upon catching any errors
+		next(err);
+	}
 });
 
 
@@ -76,16 +76,19 @@ app.use((req, res, next) => {
  * 
  * @note Should the error message be sent back to the user?
 */
-app.use((err, req, res, next) => {
-    // Log error either to error logs or to a logging service
-    console.error(err.stack);
+app.use((err, req, res) => {
+	// Increase failure count of the counter object
+	++counter.failures;
 
-    // Make sure that the status code is an error code
-    if (res.statusCode < 400)
-        res.status(err.code || 500);
+	// Log error either to error logs or to a logging service
+	console.error(err.stack);
 
-    // End the request after making sure status code is set
-    res.end(err.send_msg_back ? err.message : undefined);
+	// Make sure that the status code is an error code
+	if (res.statusCode < 400)
+		res.status(err.code || 500);
+
+	// End the request after making sure status code is set
+	res.end(err.send_msg_back ? err.message : undefined);
 });
 
 
