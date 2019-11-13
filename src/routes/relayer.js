@@ -20,7 +20,7 @@ const signerAcc = web3.eth.accounts.privateKeyToAccount(config.private_key);
 
 // Create contract object
 const abi = require("../../build/abi.json");
-const contract = new Web3.eth.Contract(abi);
+const wallet = new Web3.eth.Contract(abi);
 
 
 /**
@@ -65,8 +65,8 @@ router.get("/", (req, res) => {
  */
 router.post("/signTx", express.json(), async (req, res) => {
 
-	/** @notice Parse out data from request body */
-	const { to } = req.body;
+	/** @notice Parse out data from request body for the Expected params specified in docs above */
+	const { scw_address, to, value, data, txHash, sigs } = req.body;
 
 	/** 
 	 * @notice Create a raw Transaction first
@@ -78,13 +78,13 @@ router.post("/signTx", express.json(), async (req, res) => {
 	 * @Todo Remove the hard coded gasPrice and gasLimit. These values are actually optional
 	 */
 	const rawTx = {
-		nonce: web3.toHex(web3.eth.getTransactionCount(signerAcc)),
-		gasPrice: web3.toHex(100000000000),
-		gasLimit: web3.toHex(140000),
-		to,
-		value: web3.toHex(0),
-		// Encode the ABI of the method and the arguements
-		// data: myContract.methods.myMethod(arg, arg2).encodeABI()
+		nonce: web3.utils.toHex(web3.eth.getTransactionCount(signerAcc.address)),
+		gasPrice: web3.utils.toHex(100000000000),
+		gasLimit: web3.utils.toHex(140000),
+		scw_address,
+		value: web3.utils.toHex(0),
+		// Data is used to call the function on the user's SCW which is encoded using the contract object
+		data: wallet.methods.execute(to, value, data, txHash, sigs).encodeABI()
 	};
 
 	/** 
