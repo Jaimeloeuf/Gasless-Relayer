@@ -15,7 +15,7 @@ const config = require("../config");
 const { Web3, web3 } = require("../web3");
 
 
-/** @notice Setup code */
+/** @notice Setup relayer's account used for signing the transactions */
 const signerAcc = web3.eth.accounts.privateKeyToAccount(config.private_key);
 
 // Create contract object
@@ -54,7 +54,13 @@ router.get("/", (req, res) => {
  * const Tx = { to: ..., ... }
  * const signedTx = fetch('/relayer', {method: POST}).send(Tx)
  * // {success: true}
- *
+ * 
+ * @param scw_address Address of the user's own Smart Contract Wallet
+ * @param to The address to make the transaction to from the wallet
+ * @param value The value to sent over from the user's smart contract wallet to the 
+ * @param data The data to be sent over to the contract the wallet is interacting with
+ * @param txHash The hash of the original transaction to be signed over
+ * @param sigs The signature(s) of the txHash which will be sent over to the wallet for verification
  *
  * @todo 1. Add tx validation logic
  * @todo 2. import the private key from env file.
