@@ -18,9 +18,9 @@ const { Web3, web3 } = require("../web3");
 /** @notice Setup relayer's account used for signing the transactions */
 const signerAcc = web3.eth.accounts.privateKeyToAccount(config.private_key);
 
-// Create contract object
-const abi = require("../../build/abi.json");
-const wallet = new Web3.eth.Contract(abi);
+/** @notice Create Smart Contract Wallet object for creating transaction data using the contract's interface. */
+const walletABI = require("wallet-abi");
+const wallet = new web3.eth.Contract(walletABI);
 
 
 /**
