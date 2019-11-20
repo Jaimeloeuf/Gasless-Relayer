@@ -17,6 +17,8 @@ require("dotenv").config();
 
 /* Mount all the middleware onto the Express app */
 // if (process.env.NODE_ENV === "development") app.use(morgan("tiny")); // HTTP logging
+const { counter, counter_middleware } = require("./middleware/counter");
+app.use(counter_middleware);
 
 
 /* Mount all the routes onto the Express app */
@@ -32,6 +34,7 @@ app.get("/ping", (req, res) => {
 	res.json({
 		// @TODO Remove the hardcoded status number
 		status: 200,
+		req_counts: counter, // @Note Values in counter are also updated with calls to "/ping" via counter_middleware
 		uptime: uptime()
 	});
 });
