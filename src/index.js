@@ -97,3 +97,18 @@ app.use((err, req, res) => {
 
 const port = process.env.PORT || 2020;
 app.listen(port, () => console.log(`Server running on port: ${port}`));
+
+
+/**
+ * @notice Experimental feature
+ * 
+ * @notice Process to kill the server every fixed time,
+ * @notice so that it can be restarted to read newly refreshed environmental variables if any.
+ * @notice This is currently used instead of an API endpoint for private Key rotation
+ * 
+ * @todo Check if there are any incoming connections, or if there is any connection being "awaited"
+ */
+setTimeout(function () {
+	console.log("Natural death time");
+	process.exit(0); // Exit with no erros and OK error code
+}, 1000 * 60 * 60); // Hardcoded to die every hour
