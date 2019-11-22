@@ -29,6 +29,7 @@
         "web3": "^1.2.2"
     },
     "devDependencies": {
+        "@truffle/hdwallet-provider": "^1.0.26",
         "docdash": "^1.1.1",
         "eslint": "^6.6.0",
         "jsdoc": "^3.6.3",
