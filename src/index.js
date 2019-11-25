@@ -95,8 +95,13 @@ app.use((err, req, res) => {
 });
 
 
+/**
+ * @notice Make express server listen on a PORT
+ * @notice 'app.listen' call returns the server object, which will be exported for controlling the server programmatically.
+ * @notice Exported server will be useful when server is used as a module, such as for unit tests and integrations testing.
+ */
 const port = process.env.PORT || 2020;
-app.listen(port, () => console.log(`Server running on port: ${port}`));
+module.exports = app.listen(port, () => console.log(`Server running on port: ${port}`));
 
 
 /**
