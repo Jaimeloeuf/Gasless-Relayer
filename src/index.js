@@ -2,7 +2,7 @@
 
 /**
  * @fileOverview Run an express server on 2020
- * @requires NPM:express
+ * @requires NPM:express, NPM:dotenv
  */
 
 // Function returns uptime in ms. Self invoking partial application with startup time
@@ -12,27 +12,33 @@ const uptime = ((start_time) => () => Date.now() - start_time)(Date.now());
 const express = require("express");
 const app = express();
 
-// Read environment variables from .env file
+
+/** @notice Read environment variables from .env file */
 require("dotenv").config();
 
-/* Mount all the middleware onto the Express app */
+
+/** @notice Mount all the middleware onto the Express app */
 // if (process.env.NODE_ENV === "development") app.use(morgan("tiny")); // HTTP logging
 const { counter, counter_middleware } = require("./middleware/counter");
 app.use(counter_middleware);
 
 
-/* Mount all the routes onto the Express app */
+/** @notice Mount all the routes onto the Express app */
 app.use("/relayer", require("./routes/relayer"));
 
 
-// Ping Route to check server status
+/**
+ * @function Ping Route handler to check server status
+ * @notice Returns health stats about service, such as uptime and also request count
+ * 
+ * @Todo Remove the hardcoded status number in the response
+ */
 app.get("/ping", (req, res) => {
 	/*	Things to return to client
         - Request status
         - Uptime of the server instance
     */
 	res.json({
-		// @TODO Remove the hardcoded status number
 		status: 200,
 		req_counts: counter, // @Note Values in counter are also updated with calls to "/ping" via counter_middleware
 		uptime: uptime()
@@ -44,6 +50,7 @@ app.get("/ping", (req, res) => {
  * @function 404 Handler for all not resource not founds
  * @notice Normal request middleware, called when no other route's are matched
  * @notice Wrapped in try/catch in case response fails.
+ * 
  * @Todo Log error either to error logs or to a logging service
  */
 app.use((req, res, next) => {
