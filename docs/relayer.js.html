@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>relayer.js - Documentation for Gasless Relayer</title>
+    
+    
+    
+    
+    
+    <meta property="og:title" content="Documentation of Torus Gasless relayer"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/Jaimeloeuf/Gasless-Relayer" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h3>Modules</h3><ul><li><a href="module-Transactions.html">Transactions</a><ul class='methods'><li data-type='method'><a href="module-Transactions.html#~POST/create-wallet">POST /create-wallet</a></li><li data-type='method'><a href="module-Transactions.html#~GET/relayer">GET /relayer</a></li><li data-type='method'><a href="module-Transactions.html#~POST/relayer/signTx">POST /relayer/signTx</a></li><li data-type='method'><a href="module-Transactions.html#~Functiontocheckiftherequestmadehasallthecorrectdataneededtomakethetranasction">Function to check if the request made has all the correct data needed to make the tranasction</a></li></ul></li><li></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">relayer.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"; // Enforce use of strict verion of JavaScript
+
+/**
+ * Routes for signing transactions
+ * @author JJ
+ * @module Transactions
+ * 
+ * @notes This code is created with reference to many sources, links below:
+ * @notes https://medium.com/blockchannel/life-cycle-of-an-ethereum-transaction-e5c66bae0f6e
+ * 
+ * @todo Try generating the docs to see if it works, because the @function thing I am not so sure about it.
+ */
+
+const express = require("express");
+const router = express.Router();
+const config = require("../config");
+const { Web3, web3 } = require("../web3");
+
+
+/** @notice Setup relayer's account used for signing the transactions */
+const signerAcc = web3.eth.accounts.privateKeyToAccount(config.private_key);
+
+/** @notice Create Smart Contract Wallet object for creating transaction data using the contract's interface. */
+const walletABI = require("wallet-abi");
+const wallet = new web3.eth.Contract(walletABI);
+
+
+/**
+ * Base API point, Ping endpoint
+ * @name GET /relayer
+ * @function
+ * @param {string} path relative express path
+ * @param {callback} middleware express middleware
+ * @returns {string} Simple message
+ *
+ * 
+ * @example
+ * fetch('/relayer')
+ * // "Relayer base API endpoint"
+ */
+router.get("/", (req, res) => {
+	res.send("Relayer base API endpoint");
+});
+
+
+/**
+ * Signs a incoming transaction with private key to pay for user's Gas.
+ * @name POST /relayer/signTx
+ * @function
+ * @param {string} path relative express path
+ * @param {callback} middleware express middleware
+ * @returns {object} Signed transaction is returned to the user
+ *
+ * 
+ * @example
+ * const Tx = { to: ..., ... }
+ * const signedTx = fetch('/relayer', {method: POST}).send(Tx)
+ * // {success: true}
+ * 
+ * @param scw_address Address of the user's own Smart Contract Wallet
+ * @param to The address to make the transaction to from the wallet
+ * @param value The value to sent over from the user's smart contract wallet to the 
+ * @param data The data to be sent over to the contract the wallet is interacting with
+ * @param txHash The hash of the original transaction to be signed over
+ * @param sigs The signature(s) of the txHash which will be sent over to the wallet for verification
+ * 
+ * @notes Should the gasPrice and gasLimit be part of the txHash to sign over? Since the user needs to approve of those values
+ * @todo Learn how signatures work, and if signing over a txHash is easier than signing over the data individually
+ * 		@todo actuall sign over data may be better, as the contract needs to have all the data in order to verify if the sig is correct.
+ *
+ * @todo 1. Add tx validation logic
+ * @todo 2. import the private key from env file.
+ * @todo 3. Sign transaction and return
+ * @todo 4. Error handling in the case of failed transaction on the client
+ * @todo 5. Error handling in the case of no funds in the private key
+ * @todo 6: Add protection via options to express.json
+ */
+router.post("/signTx", express.json(), async (req, res) => {
+
+	/** @function Function to check if the request made has all the correct data needed to make the tranasction */
+	function check() {
+		// check if the owner of the wallet is actually the owner of the smart contract wallet.
+		// ^ Actually this is already checked on the smart contract level so no need to do it again
+	}
+
+	/** @notice Parse out data from request body for the Expected params specified in docs above */
+	const { scw_address, to, value, data, txHash, sigs } = req.body;
+
+	/* Expected values for this endpoint
+		nonce? Should this be provided Over here? or is the nonce the nonce for the relayer or the nonce for the user?
+				This should be nonce for the account used by the relayer
+		gasPrice and gasLimit should be given from front end
+		As the frontend already implemented the logic to find current gasPrice
+		^ If I dont need this, then the backend does not need to make any external network calls
+			Making this service almost stateless if there are no checks to be implemented
+
+
+		Copy transaction.js for the sendGrid part on how to send the mail on the frontend
+		How to write unit tests for express server routes? Make a fake call like axios or use mocha is fine
+		Implement get checksum address with Web3,for address received in signTX
+		It is prosb because the web3.eth.getTransactionCount function takes address rather than object
+	*/
+
+	/** 
+	 * @notice Create a raw Transaction first
+	 * 
+	 * @notice Use transaction count to calculate the nonce
+	 * @notice The gasPrice and gasLimit numbers are temporarily hard coded for now
+	 * @notice Value will always be 0, because the relayer will not be sending ETH to the contract
+	 * 
+	 * @Todo Remove the hard coded gasPrice and gasLimit. These values are actually optional
+	 */
+	const rawTx = {
+		nonce: web3.utils.toHex(web3.eth.getTransactionCount(signerAcc.address)),
+		gasPrice: web3.utils.toHex(100000000000),
+		gasLimit: web3.utils.toHex(140000),
+		scw_address,
+		value: web3.utils.toHex(0),
+		// Data is used to call the function on the user's SCW which is encoded using the contract object
+		data: wallet.methods.execute(to, value, data, txHash, sigs).encodeABI()
+	};
+
+	/** 
+	 * @notice Sign the transaction 
+	 * @TODO test if this works
+	*/
+	const signedTx = signerAcc.signTransaction(rawTx);
+
+	/** @notice Send back the signed transaction */
+	res.json(signedTx);
+});
+
+
+module.exports = router;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Wed Nov 27 2019 15:37:57 GMT+0800 (Singapore Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

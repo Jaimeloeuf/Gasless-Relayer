@@ -7,7 +7,7 @@
         "develop": "nodemon ./src/index.js",
         "develop-inspect": "nodemon --inspect-brk ./src/index.js",
         "start": "node ./src/index.js",
-        "buildDocs": "rimraf ./documentation && jsdoc -c ./jsdocConfiguration.json -r -d ./documentation",
+        "buildDocs": "rimraf ./docs && jsdoc -c ./jsdocConfiguration.json -r -d ./docs",
         "develop-docs": "nodemon -x npm run buildDocs",
         "lint:js": "./node_modules/.bin/eslint --ignore-path .gitignore --fix **/*.js",
         "test": "mocha"
