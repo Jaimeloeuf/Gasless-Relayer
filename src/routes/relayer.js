@@ -19,8 +19,7 @@ const { Web3, web3 } = require("../web3");
 const signerAcc = web3.eth.accounts.privateKeyToAccount(config.private_key);
 
 /** @notice Create Smart Contract Wallet object for creating transaction data using the contract's interface. */
-const walletABI = require("wallet-abi");
-const wallet = new web3.eth.Contract(walletABI);
+const wallet = new web3.eth.Contract(require("wallet-abi"));
 
 
 /**
@@ -71,33 +70,30 @@ router.get("/", (req, res) => {
  */
 router.post("/signTx", express.json(), async (req, res) => {
 
-	/** @notice Parse out data from request body for the Expected params specified in docs above */
-	const { scw_address, to, value, data, txHash, sigs } = req.body;
+	/**
+     * @notice Psuedo code
+     * 
+     * @Steps 0. Parse the "tx" and "signature" out from request body
+     * @Steps 1. Use signature to verify if Tx is valid
+     *          - Ensure user signed Tx to show intent of execution 
+     *          - Recover the address and check if it is the same as the "signed" attribute in Tx
+     * @Steps 2. Sign on Tx and return it if the signature is valid
+     * 
+     * @Todo Can possibly implement more checks than just the address check
+     */
 
-	/** 
-	 * @notice Create a raw Transaction first
-	 * 
-	 * @notice Use transaction count to calculate the nonce
-	 * @notice The gasPrice and gasLimit numbers are temporarily hard coded for now
-	 * @notice Value will always be 0, because the relayer will not be sending ETH to the contract
-	 * 
-	 * @Todo Remove the hard coded gasPrice and gasLimit. These values are actually optional
-	 */
-	const rawTx = {
-		nonce: web3.utils.toHex(web3.eth.getTransactionCount(signerAcc.address)),
-		gasPrice: web3.utils.toHex(100000000000),
-		gasLimit: web3.utils.toHex(140000),
-		scw_address,
-		value: web3.utils.toHex(0),
-		// Data is used to call the function on the user's SCW which is encoded using the contract object
-		data: wallet.methods.execute(to, value, data, txHash, sigs).encodeABI()
-	};
 
-	/** 
-	 * @notice Sign the transaction 
-	 * @TODO test if this works
-	*/
-	const signedTx = signerAcc.signTransaction(rawTx);
+	const { tx, signature } = req.body;
+
+	// Recover address from the rawTransaction
+	const address = await web3.eth.accounts.recoverTransaction(signature.rawTransaction);
+
+	// End cycle and reject user request, if the public address is different
+	if (address !== tx.from) {
+		res.json({ error: true });
+	}
+
+	const signedTx = await signerAcc.signTransaction(tx);
 
 	/** @notice Send back the signed transaction */
 	res.json(signedTx);
