@@ -54,6 +54,10 @@ Building the documentation
 $ npm run buildDocs
 ```
 
+## Documentation
+As mentioned in the section above, you can either build the latest documentation yourself locally, or alternatively, you can view it [here on github pages](https://jaimeloeuf.github.io/Gasless-Relayer/)
+
+
 ---
 ## License, Author and Contributing
 This project is developed under the "MIT License"  
