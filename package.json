@@ -26,7 +26,7 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "wallet-abi": "git+https://github.com/Jaimeloeuf/wallet-abi.git",
-        "web3": "^1.2.2"
+        "web3": "^1.2.4"
     },
     "devDependencies": {
         "@truffle/hdwallet-provider": "^1.0.26",
