@@ -12,8 +12,7 @@ const { web3 } = require("../web3");
 
 
 /** @notice Setup codes */
-const contract_abi = require("../smart_contract_wallet_abi.json");
-const wallet_contract = new web3.eth.Contract(contract_abi);
+const wallet = new web3.eth.Contract(require("wallet-abi"));
 
 
 /**
@@ -39,10 +38,10 @@ const wallet_contract = new web3.eth.Contract(contract_abi);
  * @Todo Testing
  * @Todo optimizing
  */
-router.post("/create-wallet", express.json(), async (req, res) => {
+router.post("/createWallet", express.json(), async (req, res) => {
 
 	/** @notice Setup code, take all data needed for  */
-	const { owner_address } = req.body;
+	const { ownerAddress } = req.body;
 
 	try {
 
@@ -50,10 +49,10 @@ router.post("/create-wallet", express.json(), async (req, res) => {
 		 * @notice After successful deployment the promise will resolve with a new contract instance.
 		 * @notice Constructor argument passed in as an Array, and is made sure to be Hex
 		 */
-		const new_wallet = await wallet_contract.deploy({ arguments: [web3.toHex(owner_address)] });
+		const newWallet = await wallet.deploy({ arguments: [web3.toHex(ownerAddress)] });
 
 		/** @notice Return only the address of the Smart Contract Wallet */
-		res.end(new_wallet.address);
+		res.end(newWallet.address);
 
 	} catch (err) {
 		console.log(err);
