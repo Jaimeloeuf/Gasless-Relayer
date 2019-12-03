@@ -7,7 +7,7 @@
 
 // Function returns uptime in ms. Self invoking partial application with startup time
 // Start time is recorded before any other code is ran
-const uptime = ((start_time) => () => Date.now() - start_time)(Date.now());
+const uptime = ((startTime) => () => Date.now() - startTime)(Date.now());
 
 const express = require("express");
 const app = express();
@@ -25,6 +25,7 @@ app.use(counter_middleware);
 
 /** @notice Mount all the routes onto the Express app */
 app.use("/relayer", require("./routes/relayer"));
+app.use(require("./routes/createWallet"));
 
 
 /**
