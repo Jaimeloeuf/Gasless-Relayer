@@ -54,13 +54,9 @@ router.get("/", (req, res) => {
  * const signedTx = fetch('/relayer', {method: POST}).send(Tx)
  * // {success: true}
  * 
- * @param scw_address Address of the user's own Smart Contract Wallet
- * @param to The address to make the transaction to from the wallet
- * @param value The value to sent over from the user's smart contract wallet to the 
- * @param data The data to be sent over to the contract the wallet is interacting with
- * @param txHash The hash of the original transaction to be signed over
- * @param sigs The signature(s) of the txHash which will be sent over to the wallet for verification
- *
+ * @param Tx Transaction the user wants to submit
+ * @param Signature User's EOA signature over the Tx
+ * 
  * @todo 1. Add tx validation logic
  * @todo 2. import the private key from env file.
  * @todo 3. Sign transaction and return
@@ -71,16 +67,16 @@ router.get("/", (req, res) => {
 router.post("/signTx", express.json(), async (req, res) => {
 
 	/**
-     * @notice Psuedo code
-     * 
-     * @Steps 0. Parse the "tx" and "signature" out from request body
-     * @Steps 1. Use signature to verify if Tx is valid
-     *          - Ensure user signed Tx to show intent of execution 
-     *          - Recover the address and check if it is the same as the "signed" attribute in Tx
-     * @Steps 2. Sign on Tx and return it if the signature is valid
-     * 
-     * @Todo Can possibly implement more checks than just the address check
-     */
+	 * @notice Psuedo code
+	 * 
+	 * @Steps 0. Parse the "tx" and "signature" out from request body
+	 * @Steps 1. Use signature to verify if Tx is valid
+	 *          - Ensure user signed Tx to show intent of execution 
+	 *          - Recover the address and check if it is the same as the "signed" attribute in Tx
+	 * @Steps 2. Sign on Tx and return it if the signature is valid
+	 * 
+	 * @Todo Can possibly implement more checks than just the address check
+	 */
 
 
 	const { tx, signature } = req.body;
@@ -90,8 +86,19 @@ router.post("/signTx", express.json(), async (req, res) => {
 
 	// End cycle and reject user request, if the public address is different
 	if (address !== tx.from) {
-		res.json({ error: true });
+		res.status(400);
+		res.json({ 
+			error: true,
+			description: "Public address different from recovered public address"
+		});
 	}
+
+
+	/** @notice Modify and use original transaction in request body */
+	// Modify/Add address so that signing account's address sends the transaction
+	tx.from = signerAcc.address;
+	// Modify/Add Nonce, where new nonce signing account's nonce
+	tx.nonce = web3.utils.toHex(await web3.eth.getTransactionCount(signerAcc.address));
 
 	const signedTx = await signerAcc.signTransaction(tx);
 
