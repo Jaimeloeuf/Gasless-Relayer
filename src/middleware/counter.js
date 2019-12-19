@@ -5,9 +5,7 @@
  */
 
 const router = require("express").Router();
-
-// Counter object to track number of occurences for different events
-const counter = { req: 0, failures: 0 };
+const counter = require("../utils/counter");
 
 // Middleware to increase count of req, on each request received
 router.use((req, res, next) => {
@@ -15,9 +13,5 @@ router.use((req, res, next) => {
 	next();
 });
 
-
 // Used named exports to export these objects
-module.exports = {
-	counter,
-	counter_middleware: router
-};
+module.exports = router;
